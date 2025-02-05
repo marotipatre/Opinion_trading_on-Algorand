@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.idea/**'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  Opinion_market-contracts-validate:
+    name: Run Opinion_market-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/Opinion_market-contracts-ci.yaml
+
+  Opinion_market-contracts-release:
+    name: Run Opinion_market-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/Opinion_market-contracts-cd.yaml
+    needs: Opinion_market-contracts-validate
+
+  Opinion_market-frontend-validate:
+    name: Run Opinion_market-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/Opinion_market-frontend-ci.yaml
+
+  Opinion_market-frontend-release:
+    name: Run Opinion_market-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/Opinion_market-frontend-cd.yaml
+    needs: Opinion_market-frontend-validate

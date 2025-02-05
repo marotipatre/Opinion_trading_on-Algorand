@@ -1,0 +1,14 @@
+name: Pull Request validation
+
+on: [pull_request]
+
+
+jobs:
+  Opinion_market-contracts-ci:
+    name: Run Opinion_market-contracts validation
+    uses: ./.github/workflows/Opinion_market-contracts-ci.yaml
+
+  Opinion_market-frontend-ci:
+    name: Run Opinion_market-frontend validation
+    uses: ./.github/workflows/Opinion_market-frontend-ci.yaml
+
