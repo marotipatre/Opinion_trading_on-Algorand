@@ -1,0 +1,65 @@
+#pragma version 10
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    // smart_contracts/opinion_market/contract.py:5
+    // class Demo(ARC4Contract):
+    txn NumAppArgs
+    bz main_bare_routing@6
+    pushbytes 0xcc760037 // method "set_price(uint64)void"
+    txna ApplicationArgs 0
+    match main_set_price_route@3
+
+main_after_if_else@10:
+    // smart_contracts/opinion_market/contract.py:5
+    // class Demo(ARC4Contract):
+    pushint 0 // 0
+    return
+
+main_set_price_route@3:
+    // smart_contracts/opinion_market/contract.py:9
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/opinion_market/contract.py:5
+    // class Demo(ARC4Contract):
+    txna ApplicationArgs 1
+    btoi
+    // smart_contracts/opinion_market/contract.py:9
+    // @abimethod()
+    callsub set_price
+    pushint 1 // 1
+    return
+
+main_bare_routing@6:
+    // smart_contracts/opinion_market/contract.py:5
+    // class Demo(ARC4Contract):
+    txn OnCompletion
+    bnz main_after_if_else@10
+    txn ApplicationID
+    !
+    assert // can only call when creating
+    pushint 1 // 1
+    return
+
+
+// smart_contracts.opinion_market.contract.Demo.set_price(cost: uint64) -> void:
+set_price:
+    // smart_contracts/opinion_market/contract.py:9-10
+    // @abimethod()
+    // def set_price(self,cost:UInt64) -> None:
+    proto 1 0
+    // smart_contracts/opinion_market/contract.py:11
+    // assert cost > UInt64(0), "Price must be greater than 0"
+    frame_dig -1
+    assert // Price must be greater than 0
+    // smart_contracts/opinion_market/contract.py:12
+    // self.price = cost
+    pushbytes "price"
+    frame_dig -1
+    app_global_put
+    retsub
